@@ -14,7 +14,9 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(mines_keeper src/main.cpp)
+add_executable(mines_keeper src/main.cpp
+        src/core/FieldWidget.cpp
+        src/core/FieldWidget.h)
 target_link_libraries(mines_keeper
         Qt::Core
         Qt::Gui
