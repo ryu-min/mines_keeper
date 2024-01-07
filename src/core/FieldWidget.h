@@ -1,10 +1,12 @@
 #pragma once
 
 #include "TileButton.h"
+#include "IBombGenerator.h"
 
 #include <QWidget>
 
 #include <unordered_map>
+#include <memory>
 
 namespace mk::core {
     struct QPointHash {
@@ -17,6 +19,7 @@ namespace mk::core {
         Q_OBJECT
     public:
         FieldWidget(int rows, int cols,
+            std::shared_ptr<IBombGenerator> bombGenerator,
             QWidget * parent = nullptr);
 
     private slots:
@@ -31,6 +34,7 @@ namespace mk::core {
         int m_rows;
         int m_cols;
         std::unordered_map<QPoint, TileButton*, QPointHash> m_buttonsPos;
+        std::shared_ptr<IBombGenerator> m_bombGenerator;
     };
 }
 

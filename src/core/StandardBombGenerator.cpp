@@ -1,7 +1,3 @@
-//
-// Created by ryu-min on 07.01.2024.
-//
-
 #include "StandardBombGenerator.h"
 
 void mk::core::StandardBombGenerator::setSize(const QSize &size) {

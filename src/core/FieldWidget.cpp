@@ -5,8 +5,9 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
-mk::core::FieldWidget::FieldWidget(int rows, int cols, QWidget *parent)
-    : QWidget(parent), m_rows(rows), m_cols(cols) {
+mk::core::FieldWidget::FieldWidget(int rows, int cols, std::shared_ptr<IBombGenerator> bombGenerator, QWidget *parent)
+    : QWidget(parent), m_rows(rows), m_cols(cols), m_bombGenerator(std::move(bombGenerator)) {
+    m_bombGenerator->setSize(QSize(m_rows, m_cols));
     buildForm();
 }
 
@@ -33,8 +34,7 @@ void mk::core::FieldWidget::buildForm() {
     auto * gridLayout = new QGridLayout(this);
     for (int row = 0; row < m_rows; row++) {
         for (int col = 0; col < m_cols; col++) {
-            const bool hasBomb = ((row + col) % 3 == 0);
-            const auto button = new TileButton(hasBomb);
+            const auto button = new TileButton(m_bombGenerator->hasBomb(QPoint(row, col)));
             gridLayout->addWidget(button, row, col);
             m_buttonsPos[QPoint(row, col)] = button;
             QObject::connect(button, &mk::core::TileButton::explosion, this, &mk::core::FieldWidget::explosion);
