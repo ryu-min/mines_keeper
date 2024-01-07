@@ -4,6 +4,7 @@
 
 namespace mk::core {
     class TileButton final : public QPushButton {
+        Q_OBJECT
     public:
         enum class State {
             EMPTY,
@@ -12,10 +13,11 @@ namespace mk::core {
             DEFUSED
         };
 
-        explicit TileButton(QWidget * parent = nullptr);
+        explicit TileButton(bool hasBomb, QWidget * parent = nullptr);
 
         signals:
         void requestBombsAround();
+        void explosion();
 
     public slots:
         void setBombsAround(int bombs);
@@ -25,10 +27,10 @@ namespace mk::core {
 
     private:
         void setState(State state);
-        [[nodiscard]] State getState() const;
 
     private:
         State m_state;
+        bool m_hasBomb;
     };
 }
 

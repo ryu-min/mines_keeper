@@ -2,9 +2,10 @@
 
 #include <QMouseEvent>
 
-mk::core::TileButton::TileButton(QWidget *parent)
+mk::core::TileButton::TileButton(bool hasBomb, QWidget *parent)
     : QPushButton(parent)
     , m_state(State::EMPTY)
+    , m_hasBomb(hasBomb)
 {
     setCheckable(true);
     setState(State::EMPTY);
@@ -36,12 +37,9 @@ void mk::core::TileButton::setState(State state) {
     }
 }
 
-mk::core::TileButton::State mk::core::TileButton::getState() const {
-    return m_state;
-}
 
 void mk::core::TileButton::setBombsAround(int bombs) {
-    Q_ASSERT(getState() == State::DEFUSED);
+    Q_ASSERT(m_state == State::DEFUSED);
     setIcon(QIcon());
     setText(QString::number(bombs));
 }
@@ -50,13 +48,17 @@ void mk::core::TileButton::mousePressEvent(QMouseEvent *e) {
     QPushButton::mousePressEvent(e);
     const Qt::MouseButton button = e->button();
     if (button == Qt::RightButton) {
-        if (State::EMPTY == getState()) {
+        if (State::EMPTY == m_state) {
             setState(State::FLAG);
         } else {
             setState(State::EMPTY);
         }
     } else if (button == Qt::LeftButton) {
-        setState(State::BOMB);
-
+        if (m_hasBomb) {
+            setState(State::BOMB);
+            emit explosion();
+        } else {
+            setState(State::DEFUSED);
+        }
     }
 }
