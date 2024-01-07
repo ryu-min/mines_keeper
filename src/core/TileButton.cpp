@@ -40,8 +40,14 @@ void mk::core::TileButton::setState(State state) {
 
 void mk::core::TileButton::setBombsAround(int bombs) {
     Q_ASSERT(m_state == State::DEFUSED);
-    setIcon(QIcon());
-    setText(QString::number(bombs));
+    Q_ASSERT(bombs >= 0);
+    Q_ASSERT(bombs <= 8);
+
+    if (bombs == 0) {
+        setIcon(QIcon());
+    } else {
+        setIcon(QIcon(QString(":/images/%1.png").arg(bombs)));
+    }
 }
 
 void mk::core::TileButton::mousePressEvent(QMouseEvent *e) {

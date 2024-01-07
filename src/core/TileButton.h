@@ -28,7 +28,6 @@ namespace mk::core {
     private:
         void setState(State state);
 
-    private:
         State m_state;
         bool m_hasBomb;
     };

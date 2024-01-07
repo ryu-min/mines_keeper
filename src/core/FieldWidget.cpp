@@ -3,6 +3,7 @@
 
 #include <QGridLayout>
 #include <QMessageBox>
+#include <QRandomGenerator>
 
 mk::core::FieldWidget::FieldWidget(int rows, int cols, QWidget *parent)
     : QWidget(parent), m_rows(rows), m_cols(cols) {
@@ -12,7 +13,7 @@ mk::core::FieldWidget::FieldWidget(int rows, int cols, QWidget *parent)
 void mk::core::FieldWidget::bombAroundRequested() const {
     auto * button = qobject_cast<TileButton*>(sender());
     Q_ASSERT(button);
-    button->setBombsAround(3);
+    button->setBombsAround(QRandomGenerator::global()->bounded(1, 9));
 }
 
 void mk::core::FieldWidget::explosion() {
@@ -25,7 +26,7 @@ void mk::core::FieldWidget::buildForm() {
     auto * gridLayout = new QGridLayout(this);
     for (int row = 0; row < m_rows; row++) {
         for (int col = 0; col < m_cols; col++) {
-            const bool hasBomb = ((row + col) % 2 == 0);
+            const bool hasBomb = ((row + col) % 7 == 0);
             const auto button = new TileButton(hasBomb);
             gridLayout->addWidget(button, row, col);
             m_buttonsPos[button] = QPoint(row, col);
