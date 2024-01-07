@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.15)
 project(mines_keeper)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -14,10 +14,13 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(mines_keeper src/main.cpp
+qt_add_executable(mines_keeper
+        src/main.cpp
         src/core/FieldWidget.cpp
-        src/core/FieldWidget.h)
-target_link_libraries(mines_keeper
+        src/core/FieldWidget.h
+        asserts/images.qrc)
+
+target_link_libraries(mines_keeper PRIVATE
         Qt::Core
         Qt::Gui
         Qt::Widgets

@@ -18,7 +18,7 @@ void mk::core::FieldWidget::buildForm() {
     auto * gridLayout = new QGridLayout(this);
     for (int row = 0; row < m_rows; row++) {
         for (int col = 0; col < m_cols; col++) {
-            gridLayout->addWidget(new QPushButton,row, col);
+            gridLayout->addWidget(new QPushButton(QIcon(":/images/bomb.png"), ""),row, col);
         }
     }
 }
