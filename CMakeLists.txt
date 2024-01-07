@@ -20,7 +20,10 @@ qt_add_executable(mines_keeper
         src/core/FieldWidget.h
         asserts/images.qrc
         src/core/TileButton.cpp
-        src/core/TileButton.h)
+        src/core/TileButton.h
+        src/core/IBombGenerator.h
+        src/core/StandardBombGenerator.cpp
+        src/core/StandardBombGenerator.h)
 
 target_link_libraries(mines_keeper PRIVATE
         Qt::Core
