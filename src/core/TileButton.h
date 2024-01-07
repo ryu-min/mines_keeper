@@ -14,6 +14,7 @@ namespace mk::core {
         };
 
         explicit TileButton(bool hasBomb, QWidget * parent = nullptr);
+        [[nodiscard]] bool hasBomb() const;
 
         signals:
         void requestBombsAround();

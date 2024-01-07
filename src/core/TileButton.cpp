@@ -11,6 +11,10 @@ mk::core::TileButton::TileButton(bool hasBomb, QWidget *parent)
     setState(State::EMPTY);
 }
 
+bool mk::core::TileButton::hasBomb() const {
+    return m_hasBomb;
+}
+
 void mk::core::TileButton::setState(State state) {
     m_state = state;
     switch (m_state) {

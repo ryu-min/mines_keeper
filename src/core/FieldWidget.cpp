@@ -13,7 +13,14 @@ mk::core::FieldWidget::FieldWidget(int rows, int cols, QWidget *parent)
 void mk::core::FieldWidget::bombAroundRequested() const {
     auto * button = qobject_cast<TileButton*>(sender());
     Q_ASSERT(button);
-    button->setBombsAround(QRandomGenerator::global()->bounded(1, 9));
+    const QPoint buttonPos = getButtonPos(button);
+    int bombsAround = 0;
+    for (const auto & b : getButtonsAround(buttonPos)) {
+        if (b->hasBomb()) {
+            bombsAround++;
+        }
+    }
+    button->setBombsAround(bombsAround);
 }
 
 void mk::core::FieldWidget::explosion() {
@@ -26,12 +33,43 @@ void mk::core::FieldWidget::buildForm() {
     auto * gridLayout = new QGridLayout(this);
     for (int row = 0; row < m_rows; row++) {
         for (int col = 0; col < m_cols; col++) {
-            const bool hasBomb = ((row + col) % 7 == 0);
+            const bool hasBomb = ((row + col) % 3 == 0);
             const auto button = new TileButton(hasBomb);
             gridLayout->addWidget(button, row, col);
-            m_buttonsPos[button] = QPoint(row, col);
+            m_buttonsPos[QPoint(row, col)] = button;
             QObject::connect(button, &mk::core::TileButton::explosion, this, &mk::core::FieldWidget::explosion);
             QObject::connect(button, &mk::core::TileButton::requestBombsAround, this, &mk::core::FieldWidget::bombAroundRequested);
         }
     }
+}
+
+QPoint mk::core::FieldWidget::getButtonPos(TileButton *b) const {
+    for (const auto& pair : m_buttonsPos) {
+        if (pair.second == b) {
+            return pair.first;
+        }
+    }
+    Q_ASSERT(false);
+}
+
+std::vector<mk::core::TileButton *> mk::core::FieldWidget::getButtonsAround(const QPoint &point) const {
+    std::vector<QPoint> pointsAround;
+    pointsAround.reserve(8);
+    pointsAround.push_back(point + QPoint(-1, 1));
+    pointsAround.push_back(point + QPoint(-1, 0));
+    pointsAround.push_back(point + QPoint(-1, -1));
+    pointsAround.push_back(point + QPoint(0, -1));
+    pointsAround.push_back(point + QPoint(1, -1));
+    pointsAround.push_back(point + QPoint(1, 0));
+    pointsAround.push_back(point + QPoint(1, 1));
+    pointsAround.push_back(point + QPoint(0, 1));
+
+    std::vector<mk::core::TileButton *> res;
+    for (const auto & p : pointsAround) {
+        auto buttonIt = m_buttonsPos.find(p);
+        if (buttonIt != m_buttonsPos.end()) {
+            res.push_back(buttonIt->second);
+        }
+    }
+    return res;
 }
