@@ -9,5 +9,5 @@ int main(int argc, char *argv[]) {
     mk::core::FieldWidget w(10, 10);
     w.show();
     w.setWindowIcon(QIcon(":/images/bomb.png"));
-    return app.exec();
+    return QApplication::exec();
 }

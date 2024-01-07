@@ -18,7 +18,9 @@ qt_add_executable(mines_keeper
         src/main.cpp
         src/core/FieldWidget.cpp
         src/core/FieldWidget.h
-        asserts/images.qrc)
+        asserts/images.qrc
+        src/core/TileButton.cpp
+        src/core/TileButton.h)
 
 target_link_libraries(mines_keeper PRIVATE
         Qt::Core

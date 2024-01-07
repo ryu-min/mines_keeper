@@ -3,15 +3,14 @@
 #include <QWidget>
 
 namespace mk::core {
-    class FieldWidget : public QWidget {
+    class FieldWidget final : public QWidget {
     public:
         FieldWidget(int rows, int cols,
             QWidget * parent = nullptr);
 
-    protected:
+    private:
         void buildForm();
 
-    protected:
         int m_rows;
         int m_cols;
     };
