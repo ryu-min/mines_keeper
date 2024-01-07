@@ -7,7 +7,7 @@
 
 mk::core::FieldWidget::FieldWidget(int rows, int cols, std::shared_ptr<IBombGenerator> bombGenerator, QWidget *parent)
     : QWidget(parent), m_rows(rows), m_cols(cols), m_bombGenerator(std::move(bombGenerator)) {
-    m_bombGenerator->setSize(QSize(m_rows, m_cols));
+    m_bombGenerator->setSettings(QSize(m_rows, m_cols), 10);
     buildForm();
 }
 

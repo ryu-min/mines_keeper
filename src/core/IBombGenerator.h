@@ -6,7 +6,7 @@
 namespace mk::core {
     class IBombGenerator {
     public:
-        virtual void setSize(const QSize & size) = 0;
+        virtual void setSettings(const QSize & size, int bombs) = 0;
         virtual bool hasBomb(const QPoint & pos) = 0;
     };
 }
