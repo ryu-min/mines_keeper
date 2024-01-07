@@ -15,6 +15,15 @@ bool mk::core::TileButton::hasBomb() const {
     return m_hasBomb;
 }
 
+void mk::core::TileButton::defuse() {
+    Q_ASSERT(!m_hasBomb);
+    setState(State::DEFUSED);
+}
+
+bool mk::core::TileButton::isDefused() const {
+    return m_state == State::DEFUSED;
+}
+
 void mk::core::TileButton::setState(State state) {
     m_state = state;
     switch (m_state) {
@@ -33,7 +42,7 @@ void mk::core::TileButton::setState(State state) {
             setIcon(QIcon());
             setEnabled(false);
             setChecked(true);
-            emit requestBombsAround();
+            emit defused();
         } break;
         default: {
             setIcon(QIcon());

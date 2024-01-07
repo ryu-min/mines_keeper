@@ -7,25 +7,41 @@
 
 mk::core::FieldWidget::FieldWidget(int rows, int cols, std::shared_ptr<IBombGenerator> bombGenerator, QWidget *parent)
     : QWidget(parent), m_rows(rows), m_cols(cols), m_bombGenerator(std::move(bombGenerator)) {
-    m_bombGenerator->setSettings(QSize(m_rows, m_cols), 10);
+    m_bombGenerator->setSettings(QSize(m_rows, m_cols), 12);
     buildForm();
 }
 
-void mk::core::FieldWidget::bombAroundRequested() const {
+void mk::core::FieldWidget::bombDefused() {
     auto * button = qobject_cast<TileButton*>(sender());
     Q_ASSERT(button);
-    const QPoint buttonPos = getButtonPos(button);
-    int bombsAround = 0;
-    for (const auto & b : getButtonsAround(buttonPos)) {
-        if (b->hasBomb()) {
-            bombsAround++;
-        }
-    }
-    button->setBombsAround(bombsAround);
+    button->setBombsAround(getBombsAround(button));
+    defuseAround(button);
 }
 
 void mk::core::FieldWidget::explosion() {
     QMessageBox::information(this, "saaaad", "you lose, bro :(");
+}
+
+void mk::core::FieldWidget::defuseAround(mk::core::TileButton * button) {
+    for (const auto & b : getButtonsAround(button)) {
+        if (getBombsAround(b) <= 1 && !b->isDefused() && !b->hasBomb()) {
+            b->defuse();
+            defuseAround(b);
+        }
+    }
+
+    // std::vector<TileButton *> buttonsToDefuse;
+    // buttonsToDefuse.push_back(button);
+    // while (!buttonsToDefuse.empty()) {
+    //     TileButton *currentButton = buttonsToDefuse.back();
+    //     buttonsToDefuse.pop_back();
+    //     for (const auto & b : getButtonsAround(currentButton)) {
+    //         if (!b->isDefused() && getBombsAround(b) <= 1 && !b->hasBomb()) {
+    //             b->defuse();
+    //             buttonsToDefuse.push_back(b);
+    //         }
+    //     }
+    // }
 }
 
 void mk::core::FieldWidget::buildForm() {
@@ -38,11 +54,12 @@ void mk::core::FieldWidget::buildForm() {
             gridLayout->addWidget(button, row, col);
             m_buttonsPos[QPoint(row, col)] = button;
             QObject::connect(button, &mk::core::TileButton::explosion, this, &mk::core::FieldWidget::explosion);
-            QObject::connect(button, &mk::core::TileButton::requestBombsAround, this, &mk::core::FieldWidget::bombAroundRequested);
+            QObject::connect(button, &mk::core::TileButton::defused, this, &mk::core::FieldWidget::bombDefused);
         }
     }
 }
 
+/// suboptiomal :(
 QPoint mk::core::FieldWidget::getButtonPos(TileButton *b) const {
     for (const auto& pair : m_buttonsPos) {
         if (pair.second == b) {
@@ -52,7 +69,8 @@ QPoint mk::core::FieldWidget::getButtonPos(TileButton *b) const {
     Q_ASSERT(false);
 }
 
-std::vector<mk::core::TileButton *> mk::core::FieldWidget::getButtonsAround(const QPoint &point) const {
+std::vector<mk::core::TileButton *> mk::core::FieldWidget::getButtonsAround(mk::core::TileButton * button) const {
+    QPoint point = getButtonPos(button);
     std::vector<QPoint> pointsAround;
     pointsAround.reserve(8);
     pointsAround.push_back(point + QPoint(-1, 1));
@@ -72,4 +90,14 @@ std::vector<mk::core::TileButton *> mk::core::FieldWidget::getButtonsAround(cons
         }
     }
     return res;
+}
+
+int mk::core::FieldWidget::getBombsAround(TileButton *button) const {
+    int bombsAround = 0;
+    for (const auto & b : getButtonsAround(button)) {
+        if (b->hasBomb()) {
+            bombsAround++;
+        }
+    }
+    return bombsAround;
 }

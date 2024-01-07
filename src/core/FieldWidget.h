@@ -23,13 +23,15 @@ namespace mk::core {
             QWidget * parent = nullptr);
 
     private slots:
-        void bombAroundRequested() const;
+        void bombDefused();
         void explosion();
+        void defuseAround(mk::core::TileButton * button);
 
     private:
         void buildForm();
-        QPoint getButtonPos(TileButton* b) const;
-        std::vector<TileButton*> getButtonsAround(const QPoint & point) const;
+        [[nodiscard]] QPoint getButtonPos(TileButton* b) const;
+        [[nodiscard]] std::vector<TileButton*> getButtonsAround(mk::core::TileButton * button) const;
+        [[nodiscard]] int getBombsAround(TileButton * button) const;
 
         int m_rows;
         int m_cols;
