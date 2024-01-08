@@ -5,9 +5,9 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
-mk::core::FieldWidget::FieldWidget(int rows, int cols, std::shared_ptr<IBombGenerator> bombGenerator, QWidget *parent)
+mk::core::FieldWidget::FieldWidget(int rows, int cols, int bombs, std::shared_ptr<IBombGenerator> bombGenerator, QWidget *parent)
     : QWidget(parent), m_rows(rows), m_cols(cols), m_bombGenerator(std::move(bombGenerator)) {
-    m_bombGenerator->setSettings(QSize(m_rows, m_cols), 12);
+    m_bombGenerator->setSettings(QSize(m_rows, m_cols), bombs);
     buildForm();
 }
 
@@ -23,26 +23,23 @@ void mk::core::FieldWidget::explosion() {
 }
 
 void mk::core::FieldWidget::defuseAround(mk::core::TileButton * button) {
-    for (const auto & b : getButtonsAround(button)) {
-        if (getBombsAround(b) <= 1 && !b->isDefused() && !b->hasBomb()) {
-            b->defuse();
-            defuseAround(b);
+    if (getBombsAround(button) == 0 && !button->hasBomb()) {
+        for (const auto & b : getButtonsAround(button)) {
+            if (!b->isDefused()) {
+                b->defuse();
+                defuseAround(b);
+            }
         }
     }
-
-    // std::vector<TileButton *> buttonsToDefuse;
-    // buttonsToDefuse.push_back(button);
-    // while (!buttonsToDefuse.empty()) {
-    //     TileButton *currentButton = buttonsToDefuse.back();
-    //     buttonsToDefuse.pop_back();
-    //     for (const auto & b : getButtonsAround(currentButton)) {
-    //         if (!b->isDefused() && getBombsAround(b) <= 1 && !b->hasBomb()) {
-    //             b->defuse();
-    //             buttonsToDefuse.push_back(b);
-    //         }
+    // }
+    // for (const auto & b : getButtonsAround(button)) {
+    //     if (getBombsAround(b) <= 1 && !b->isDefused() && !b->hasBomb()) {
+    //         b->defuse();
+    //         defuseAround(b);
     //     }
     // }
 }
+
 
 void mk::core::FieldWidget::buildForm() {
     Q_ASSERT(m_rows > 0);

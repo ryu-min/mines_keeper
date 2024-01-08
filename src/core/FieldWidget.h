@@ -18,7 +18,7 @@ namespace mk::core {
     class FieldWidget final : public QWidget {
         Q_OBJECT
     public:
-        FieldWidget(int rows, int cols,
+        FieldWidget(int rows, int cols, int bombs,
             std::shared_ptr<IBombGenerator> bombGenerator,
             QWidget * parent = nullptr);
 
