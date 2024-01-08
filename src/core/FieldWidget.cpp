@@ -31,13 +31,6 @@ void mk::core::FieldWidget::defuseAround(mk::core::TileButton * button) {
             }
         }
     }
-    // }
-    // for (const auto & b : getButtonsAround(button)) {
-    //     if (getBombsAround(b) <= 1 && !b->isDefused() && !b->hasBomb()) {
-    //         b->defuse();
-    //         defuseAround(b);
-    //     }
-    // }
 }
 
 
